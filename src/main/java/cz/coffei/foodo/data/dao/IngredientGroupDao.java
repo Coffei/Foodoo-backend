@@ -7,6 +7,7 @@ import cz.coffei.foodo.data.exceptions.EntityInvalidException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,6 +31,12 @@ public class IngredientGroupDao {
 
     public void update(IngredientGroup group) throws EntityInvalidException {
         if(group.getId()==null) throw new EntityInvalidException("entity has no ID");
+        try {
+            IngredientGroup oldGroup = getGroupById(group.getId());
+            group.setIngredients(oldGroup.getIngredients());
+        } catch (NoResultException e) {
+            throw new EntityInvalidException("entity has invalid ID", e);
+        }
 
         em.merge(group);
     }

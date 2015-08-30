@@ -37,13 +37,14 @@ public class IngredientDao {
 
 
     public void delete(Ingredient ingredient) throws EntityInvalidException {
-        if(ingredient.getId()==null) throw new EntityInvalidException("entity has no ID");
+        if(ingredient.getId()==null || ingredient.getGroup()==null) throw new EntityInvalidException("entity has no ID");
 
+        IngredientGroup group = null;
         if(!em.contains(ingredient)) {
-            ingredient = em.merge(ingredient);
+            group = em.merge(ingredient.getGroup());
         }
 
-        em.remove(ingredient);
+        group.getIngredients().remove(ingredient); // triggers removal of ingredient
     }
 
     public List<Ingredient> getAllIngredients() {

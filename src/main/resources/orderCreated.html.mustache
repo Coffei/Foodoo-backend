@@ -1,0 +1,26 @@
+<html>
+    <body>
+        <h1>Your order #{{id}} was created!</h1>
+        <h3>Ordered items:</h3>
+        <table style="margin-left: 20px;">
+            <tbody>
+                {{#items}}
+                    <tr>
+                        <td>
+                            &#8226; <strong>{{type}}</strong> <i>{{name}}</i>
+                        </td>
+                        <td style="padding-left: 10px">{{times}}x</td>
+                        <td style="padding-left: 10px">{{price}}Kč</td>
+                    </tr>
+                {{/items}}
+            </tbody>
+        </table>
+        <br/>
+        {{#targetTimeSelected}}
+            <p>You selected preferred pickup time {{targetTime}}.</p>
+        {{/targetTimeSelected}}
+        <h4>Total price: {{price}}Kč {{#takeaway}}<small>incl. takeaway</small>{{/takeaway}}</h4>
+        <p>You can see more details including current status <a href="{{{details_link}}}">at this link.</a><br/>
+        If you wish, you can cancel the order within 15 minutes <a href="{{{cancel_link}}}">at this link.</a></p>
+    </body>
+</html>

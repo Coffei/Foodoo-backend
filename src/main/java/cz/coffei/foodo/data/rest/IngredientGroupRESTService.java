@@ -21,8 +21,8 @@ import java.util.logging.Logger;
  * Created by jtrantin on 26.7.15.
  */
 @Path("/groups")
-@Produces("application/json")
-@Consumes("application/json")
+@Produces("application/json;charset=UTF-8")
+@Consumes("application/json;charset=UTF-8")
 @RequestScoped
 public class IngredientGroupRESTService {
 

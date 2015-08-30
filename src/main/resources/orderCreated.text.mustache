@@ -1,0 +1,14 @@
+Your order #{{id}} was created!
+----------------------------------------
+Ordered items:
+{{#items}}
+ - {{type}} {{name}} - {{times}}x -- {{price}}Kč
+{{/items}}
+
+{{#targetTimeSelected}}You selected preferred pickup time {{targetTime}}.{{/targetTimeSelected}}
+Total price: {{price}}Kč{{#takeaway}} incl. takeaway{{/takeaway}}
+
+You can see more details including current status at the following link: {{{details_link}}}.
+If you wish, you can cancel the order within 15 minutes using the following link: {{{cancel_link}}}
+
+You will be notified by email when a status of the order changes.

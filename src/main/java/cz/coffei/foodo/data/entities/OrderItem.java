@@ -1,5 +1,6 @@
 package cz.coffei.foodo.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.coffei.foodo.data.enums.OrderItemType;
 
 import javax.persistence.*;
@@ -68,7 +69,7 @@ public class OrderItem {
         this.ingredients = ingredients;
     }
 
-    @XmlTransient
+    @JsonIgnore
     public Order getOrder() {
         return order;
     }

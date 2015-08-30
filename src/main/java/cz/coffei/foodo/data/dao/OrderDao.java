@@ -5,13 +5,16 @@ import cz.coffei.foodo.data.entities.*;
 import cz.coffei.foodo.data.enums.OrderItemType;
 import cz.coffei.foodo.data.enums.OrderStatus;
 import cz.coffei.foodo.data.exceptions.EntityInvalidException;
+import cz.coffei.foodo.data.mail.MailSender;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.util.*;
@@ -43,14 +46,15 @@ public class OrderDao {
     @Inject
     private PriceConstantDao priceConstantDao;
 
-    public void createOrder(Order order) throws EntityInvalidException {
-        Integer takeawayPrice = priceConstantDao.getPriceConstant("takeaway", 0).getValue();
+
+    public Order createOrder(Order order) throws EntityInvalidException {
+        PriceConstant takeawayPrice = priceConstantDao.getPriceConstant("takeaway", 0);
         Integer price = 0;
         for(OrderItem orderItem : order.getOrderItems()) {
             orderItem.setOrder(order);
 
             if(orderItem.getType()== OrderItemType.MENU) {
-                if(orderItem.getMenu()==null || orderItem.getId()==null) throw new EntityInvalidException("type MENU specified but no menu present");
+                if(orderItem.getMenu()==null || orderItem.getMenu().getId()==null) throw new EntityInvalidException("type MENU specified but no valid menu present");
                 MenuItem menu = menuDao.getMenuItem(orderItem.getMenu().getId());
                 price += menu.getPrice() * (orderItem.getTimes() != null ? orderItem.getTimes() : 1);
             } else { // custom salad
@@ -83,7 +87,7 @@ public class OrderDao {
         }
         if (order.isTakeaway()) {
             int portionCount = order.getOrderItems().stream().mapToInt(orderItem -> orderItem.getTimes() != null ? orderItem.getTimes() : 1).sum();
-            price += portionCount * takeawayPrice;
+            price += portionCount * takeawayPrice.getValue();
         }
 
         order.setStatus(OrderStatus.NEW);
@@ -91,6 +95,7 @@ public class OrderDao {
         order.setCreated(new Timestamp(System.currentTimeMillis() - offset));
         order.setTotalPrice(price);
         em.persist(order);
+        return order;
     }
 
     public void updateOrder(Order order) throws EntityInvalidException {
@@ -121,7 +126,25 @@ public class OrderDao {
         query.where(cb.equal(root.get(Order_.id), id));
 
         TypedQuery<Order> typedQuery = em.createQuery(query);
-        return typedQuery.getSingleResult();
+        Order order = typedQuery.getSingleResult();
+
+        return order;
+    }
+
+    public List<Order> getOrdersByStatuses(List<OrderStatus> statuses) {
+        if(statuses == null) throw new NullPointerException("statuses");
+        if(statuses.isEmpty()) return Collections.emptyList();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Order> query = cb.createQuery(Order.class);
+
+        Root<Order> root = query.from(Order.class);
+        query.select(root);
+        List<Predicate> statusPredicates = statuses.stream().map((status) -> cb.equal(root.get(Order_.status), status)).collect(Collectors.toList());
+        query.where(cb.or(statusPredicates.toArray(new Predicate[0])));
+
+        TypedQuery<Order> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     public void deleteOrder(Order order) throws EntityInvalidException {

@@ -6,6 +6,7 @@ import cz.coffei.foodo.data.exceptions.EntityInvalidException;
 import cz.coffei.foodo.data.rest.utils.ErrorHelper;
 import jdk.nashorn.internal.runtime.options.LoggingOption;
 
+import javax.ejb.EJBException;
 import javax.ejb.EJBTransactionRequiredException;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.RequestScoped;
@@ -19,8 +20,8 @@ import java.util.logging.Logger;
  * Created by jtrantin on 26.7.15.
  */
 @Path("/ingredients")
-@Produces("application/json")
-@Consumes("application/json")
+@Produces("application/json;charset=UTF-8")
+@Consumes("application/json;charset=UTF-8")
 @RequestScoped
 public class IngredientRESTService {
 
@@ -57,8 +58,13 @@ public class IngredientRESTService {
     @DELETE
     @Path("/{id}")
     public Response deleteIngredient(@PathParam("id") Long id) {
-        Ingredient ingredient = new Ingredient();
-        ingredient.setId(id);
+        Ingredient ingredient;
+
+        try {
+            ingredient = dao.getIngredientById(id);
+        } catch (EJBException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
         log.info("Deleting ingredient:");
         log.info(ingredient.toString());

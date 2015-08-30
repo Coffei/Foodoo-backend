@@ -1,0 +1,18 @@
+Your order #{{id}} was cancelled!
+---------------------------------
+{{#user_cancelled}}
+You have cancelled the order within 15 minutes of creation. You can re-order the items if you wish.
+{{/user_cancelled}}
+{{#admin_cancelled}}
+The order was cancelled by staff, please contact them with the order number if you wish to know more.
+{{/admin_cancelled}}
+
+Order summary:
+{{#items}}
+    - {{type}} {{name}} - {{times}}x -- {{price}}Kč
+{{/items}}
+
+{{#targetTimeSelected}}You selected preferred pickup time {{targetTime}}.{{/targetTimeSelected}}
+Total price: {{price}}Kč{{#takeaway}} incl. takeaway{{/takeaway}}
+
+You can see more details including current status at the following link: {{{details_link}}}.

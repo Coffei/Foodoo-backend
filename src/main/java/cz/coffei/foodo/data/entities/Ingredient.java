@@ -3,6 +3,7 @@ package cz.coffei.foodo.data.entities;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -21,6 +22,7 @@ public class Ingredient {
 
     private String description;
 
+    @Min(value = 0)
     private Integer price;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

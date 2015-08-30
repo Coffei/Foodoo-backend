@@ -1,5 +1,6 @@
 package cz.coffei.foodo.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -31,7 +32,7 @@ public class IngredientGroup {
 
     private boolean allowMore;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "group")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "group", orphanRemoval = true)
     private List<Ingredient> ingredients;
 
     public Long getId() {
@@ -74,7 +75,7 @@ public class IngredientGroup {
         this.allowMore = allowMore;
     }
 
-    @XmlTransient
+    @JsonIgnore
     public List<Ingredient> getIngredients() {
         return ingredients;
     }

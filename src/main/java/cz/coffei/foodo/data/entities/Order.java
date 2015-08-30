@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -42,6 +43,8 @@ public class Order {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "order", orphanRemoval = true)
     private List<OrderItem> orderItems;
+
+    private LocalTime targetTime;
 
     public Long getId() {
         return id;
@@ -114,6 +117,14 @@ public class Order {
         this.status = status;
     }
 
+    public LocalTime getTargetTime() {
+        return targetTime;
+    }
+
+    public void setTargetTime(LocalTime targetTime) {
+        this.targetTime = targetTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -129,7 +140,8 @@ public class Order {
         if (totalPrice != null ? !totalPrice.equals(order.totalPrice) : order.totalPrice != null) return false;
         if (created != null ? !created.equals(order.created) : order.created != null) return false;
         if (status != order.status) return false;
-        return !(orderItems != null ? !orderItems.equals(order.orderItems) : order.orderItems != null);
+        if (orderItems != null ? !orderItems.equals(order.orderItems) : order.orderItems != null) return false;
+        return !(targetTime != null ? !targetTime.equals(order.targetTime) : order.targetTime != null);
 
     }
 
@@ -143,6 +155,7 @@ public class Order {
         result = 31 * result + (created != null ? created.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (orderItems != null ? orderItems.hashCode() : 0);
+        result = 31 * result + (targetTime != null ? targetTime.hashCode() : 0);
         return result;
     }
 
@@ -157,6 +170,7 @@ public class Order {
                 ", created=" + created +
                 ", status=" + status +
                 ", orderItems=" + orderItems +
+                ", targetTime=" + targetTime +
                 '}';
     }
 }

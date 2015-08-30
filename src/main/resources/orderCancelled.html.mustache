@@ -1,0 +1,31 @@
+<html>
+    <body>
+        <h1>Your order #{{id}} was cancelled!</h1>
+        {{#user_cancelled}}
+            <p>You have cancelled the order within 15 minutes of creation. You can re-order the items if you wish.</p>
+        {{/user_cancelled}}
+        {{#admin_cancelled}}
+            <p>The order was cancelled by staff, please contact them with the order number if you wish to know more.</p>
+        {{/admin_cancelled}}
+        <h2>Order summary:</h2>
+        <table style="margin-left: 20px;">
+            <tbody>
+            {{#items}}
+                <tr>
+                    <td>
+                        &#8226; <strong>{{type}}</strong> <i>{{name}}</i>
+                    </td>
+                    <td style="padding-left: 10px">{{times}}x</td>
+                    <td style="padding-left: 10px">{{price}}Kč</td>
+                </tr>
+            {{/items}}
+            </tbody>
+        </table>
+        <br/>
+        {{#targetTimeSelected}}
+            <p>You selected preferred pickup time {{targetTime}}.</p>
+        {{/targetTimeSelected}}
+        <h4>Total price: {{price}}Kč {{#takeaway}}<small>incl. takeaway</small>{{/takeaway}}</h4>
+        <p>You can see more details including current status <a href="{{{details_link}}}">at this link.</a><br/>
+    </body>
+</html>
