@@ -69,10 +69,10 @@ public class OrderDao {
                 }
 
                 // check whether groups that do not allow more ingredients are not misused
-                Stream<IngredientGroup> mappedGroups = ingredients.stream().map(Ingredient::getGroup).filter(group -> !group.isAllowMore());
-                List<IngredientGroup> usedGroups = ingredients.stream().map(Ingredient::getGroup).filter(group -> !group.isAllowMore()).distinct().collect(Collectors.toList());
+                List<IngredientGroup> mappedGroups = ingredients.stream().map(Ingredient::getGroup).filter(group -> !group.isAllowMore()).collect(Collectors.toList());
+                List<IngredientGroup> usedGroups = mappedGroups.stream().distinct().collect(Collectors.toList());
                 for(IngredientGroup group : usedGroups) {
-                    if(mappedGroups.filter(filterGroup -> filterGroup.equals(group)).count() > 1)
+                    if(mappedGroups.stream().filter(filterGroup -> filterGroup.equals(group)).count() > 1)
                         throw new EntityInvalidException("More ingredients from group " + group.getName() + " selected even though it's forbidden");
                 }
 
