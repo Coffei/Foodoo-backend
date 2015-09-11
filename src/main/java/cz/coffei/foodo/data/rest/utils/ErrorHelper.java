@@ -43,11 +43,11 @@ public class ErrorHelper {
     static public <T extends Exception> T findExceptionByClass(Exception e, Class<T> exceptionClass) {
         Exception exception = e;
         while(exception != null) {
-            if (exception.getClass().toString().equals(exceptionClass.toString())) break;
+            if (exception.getClass().toString().equals(exceptionClass.toString())) return exceptionClass.cast(exception);
             exception = (Exception)exception.getCause();
         }
 
-        return exceptionClass.cast(exception);
+        return null;
     }
 
 
